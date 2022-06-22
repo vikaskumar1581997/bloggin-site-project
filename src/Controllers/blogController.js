@@ -5,8 +5,6 @@ const blogModel = require("../Models/blogModel")
 const createBlog = async function (req, res) {
     try {
         const data = req.body
-        
-       
             const user = await authorModel.findById(data.authorId)
         if (!user) return res.status(400).send({ status: false, msg: "Enter the Valid Author Id" })
         const saveData = await blogModel.create(data)
@@ -49,11 +47,11 @@ const updateBlog = async function (req, res) {
         const data = req.body
         data.isPublished = true
         data.publishedAt = Date.now()
-        updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $set: { title: data.title, body: data.body } }, { new: true })
-        updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags } }, { new: true })
-        updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
+        updatedBlog = await blogModel.findByIdAndUpdate(blogId, {  $push: { tags: data.tags,  subcategory: data.subcategory },title: data.title, body: data.body } , { new: true })
+        // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
+        // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
-        return res.status(200).send({ status: true, data: updatedBlog2 })
+        return res.status(200).send({ status: true, data: updatedBlog })
     }
     catch (err) {
         res.status(500).send(err.message)
