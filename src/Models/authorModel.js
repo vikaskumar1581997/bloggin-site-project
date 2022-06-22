@@ -3,16 +3,16 @@ const mongoose = require('mongoose')
 const authorSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        require:true
+        required:true
     },
     lastName: {
         type: String,
-        require: true
+        required: true
     },
     title: {
         type: String,
         enum: ["Mr", "Mrs", "Miss"],
-        require: true
+        required: true
     },
     email: {
         type: String,   

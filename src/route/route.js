@@ -5,18 +5,17 @@ const Blogcontroller = require("../Controllers/blogController")
 
 
 
-
-
 router.post('/authors', Authorcontroller.createAuthor)
 
 router.post("/blog", Blogcontroller.createBlog)
 
-
-router.get("/blogData", Blogcontroller.getBlogData)
+router.get("/blogs", Blogcontroller.getBlogData)
 
 router.put("/blogs/:blogId", Blogcontroller.updateBlog)
 
+router.delete("/blogs/:blogId", Blogcontroller.deleteBlog)
 
+router.delete("/blogs", Blogcontroller.deleteBlogByQuerry)
 
 
 module.exports = router;
