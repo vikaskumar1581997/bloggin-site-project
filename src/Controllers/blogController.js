@@ -5,24 +5,24 @@ const blogModel = require("../Models/blogModel")
 const createBlog = async function (req, res) {
     try {
         const data = req.body
-        if(data.title==null){
-            return res.status(400).send("title  should not be empty")}
+        if(data.title==null||(typeof(data.title)!="string")){
+            return res.status(400).send("title  should not be empty and should be string")}
         if(data.title.trim().length==0){
             return res.status(400).send("title should not be blank")}
         
-       if(data.body==null){
+        if(data.body==null||(typeof(data.body)!="string")){
                 return res.status(400).send("body should not be empty")}
             
        if(data.body.trim().length==0){
                 return res.status(400).send(" body should not be blank")}
 
-         if(data.category==null){
+        if(data.category==null||(typeof(data.category)!="string")){
                 return res.status(400).send("category should not be empty")}
                 
         if(data.category.trim().length==0){
                 return res.status(400).send(" category should not be blank")}
        
-            const user = await authorModel.findById(data.authorId)
+         const user = await authorModel.findById(data.authorId)
         if (!user) return res.status(400).send({ status: false, msg: "Enter the Valid Author Id" })
         const saveData = await blogModel.create(data)
         res.status(201).send({ status: true, data: saveData })
@@ -64,7 +64,7 @@ const updateBlog = async function (req, res) {
         const data = req.body
         data.isPublished = true
         data.publishedAt = Date.now()
-        updatedBlog = await blogModel.findByIdAndUpdate(blogId, {  $push: { tags: data.tags,  subcategory: data.subcategory },title: data.title, body: data.body } , { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, {  $push: { tags: data.tags,  subcategory: data.subcategory },title: data.title, body: data.body } , { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 

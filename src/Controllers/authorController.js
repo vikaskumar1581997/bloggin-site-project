@@ -17,11 +17,14 @@ const createAuthor = async function (req, res) {
 
         if(data.lastName==null){
                 return res.status(400).send("last name should not be empty and should be string")}
+
+        if(typeof(data.lastName)!="string"){
+                    return res.status(400).send("last name should be string")}
             
          if(data.lastName.trim().length==0){
                 return res.status(400).send("last name should not be empty")}
 
-         if(data.password==null||(typeof(data.password)!==String)){
+         if(data.password==null||(typeof(data.password)!="string")){
                     return res.status(400).send("Password should not be empty and should be string")}
                 
          if(data.password.trim().length==0){
