@@ -5,29 +5,83 @@ const blogModel = require("../Models/blogModel")
 const createBlog = async function (req, res) {
     try {
         const data = req.body
-        if(data.title==null||(typeof(data.title)!="string")){
-            return res.status(400).send("title  should not be empty and should be string")}
-        if(data.title.trim().length==0){
-            return res.status(400).send("title should not be blank")}
-        
-        if(data.body==null||(typeof(data.body)!="string")){
-                return res.status(400).send("body should not be empty")}
-            
-       if(data.body.trim().length==0){
-                return res.status(400).send(" body should not be blank")}
+        console.log(typeof (data.tags))
+        if (data.title == null || (typeof (data.title) != "string")) {
+            return res.status(400).send("title  should not be empty and should be string")
+        }
+        if (data.title.trim().length == 0) {
+            return res.status(400).send("title should not be blank")
+        }
 
-        if(data.category==null||(typeof(data.category)!="string")){
-                return res.status(400).send("category should not be empty")}
-                
-        if(data.category.trim().length==0){
-                return res.status(400).send(" category should not be blank")}
-       
-         const user = await authorModel.findById(data.authorId)
+        if (data.body == null || (typeof (data.body) != "string")) {
+            return res.status(400).send("body should not be empty")
+        }
+
+        if (data.body.trim().length == 0) {
+            return res.status(400).send(" body should not be blank")
+        }
+
+        if (data.category == null || (typeof (data.category) != "string")) {
+            return res.status(400).send("category should not be empty")
+        }
+
+        if (data.category.trim().length == 0) {
+            return res.status(400).send(" category should not be blank")
+        }
+        console.log(data.tags)
+        // if (data.tags == null) {
+        //     return res.status(400).send(" tags should not be null or empty")
+        // }
+        if (data.tags !== null) { //bcoz not required true
+
+            if (typeof (data.tags) == "object") {
+                if (data.tags.length == 0) {
+                    return res.status(400).send("tags should not be empty")
+                }
+                for (i = 0; i < data.tags.length; i++) {
+                    if (typeof (data.tags[i]) != "string") {
+                        return res.status(400).send("tags should be array of string")
+                    }
+                }
+            } else {
+                if (typeof (data.tags) != "string") {
+                    return res.status(400).send("tags should be string ")
+                }
+                if (data.tags.trim().length == 0) {
+                    return res.status(400).send(" tags should not be blank")
+                }
+            }
+        }
+
+
+        if (data.subcategory != null) { //bcoz not required true
+
+            if (typeof (data.subcategory) == "object") {
+                if (data.subcategory.length == 0) {
+                    return res.status(400).send("subcategory should not be empty")
+                }
+                for (i = 0; i < data.subcategory.length; i++) {
+                    if (typeof (data.subcategory[i]) != "string") {
+                        return res.status(400).send("subcategory should be array of string")
+                    }
+                }
+            } else {
+                if (typeof (data.subcategory) != "string") {
+                    return res.status(400).send("subcategory should be string ")
+                }
+                if (data.subcategory.trim().length == 0) {
+                    return res.status(400).send(" subcategory should not be blank")
+                }
+            }
+        }
+
+
+        const user = await authorModel.findById(data.authorId)
         if (!user) return res.status(400).send({ status: false, msg: "Enter the Valid Author Id" })
         const saveData = await blogModel.create(data)
         res.status(201).send({ status: true, data: saveData })
-        
-        
+
+
     }
     catch (err) {
         res.status(500).send(err.message)
@@ -35,18 +89,19 @@ const createBlog = async function (req, res) {
 
 }
 
+
 const getBlogData = async function (req, res) {
     try {
         const data = req.query
         data.isDeleted = false
         data.isPublished = true
         const result = await blogModel.find(data)
-        if(result.length == 0) {
+        if (result.length == 0) {
             return res.status(400).send("Incorrect Data entered")
         }
         // console.log(result)
         return res.status(200).send({ status: true, msg: result })
-        
+
     }
     catch (err) {
         res.status(500).send(err.message)
@@ -62,9 +117,76 @@ const updateBlog = async function (req, res) {
         const isavailable = await blogModel.find({ _id: blogId, isDeleted: false });
         if (isavailable.length == 0) { return res.status(404).send("BlogId is invalid") }
         const data = req.body
+        if (data.title != null && (typeof (data.title) != "string")) {
+            return res.status(400).send("title  should not be empty and should be string")
+        }
+        if (data.title.trim().length == 0) {
+            return res.status(400).send("title should not be blank")
+        }
+
+        if (data.body != null && (typeof (data.body) != "string")) {
+            return res.status(400).send("body should not be empty")
+        }
+
+        if (data.body.trim().length == 0) {
+            return res.status(400).send(" body should not be blank")
+        }
+
+        if (data.category != null && (typeof (data.category) != "string")) {
+            return res.status(400).send("category should not be empty")
+        }
+
+        if (data.category.trim().length == 0) {
+            return res.status(400).send(" category should not be blank")
+        }
+        //================================================================
+
+        if (data.tags != null) {
+            if (typeof (data.tags) == "object") {
+                if (data.tags.length == 0) {
+                    return res.status(400).send("tags should not be empty")
+                }
+                for (i = 0; i < data.tags.length; i++) {
+                    if (typeof (data.tags[i]) != "string") {
+                        return res.status(400).send("tags should be array of string")
+                    }
+                }
+            } else {
+                if (typeof (data.tags) != "string") {
+                    return res.status(400).send("tags should be string ")
+                }
+                if (data.tags.trim().length == 0) {
+                    return res.status(400).send(" tags should not be blank")
+                }
+            }
+        }
+
+
+
+        if (data.subcategory != null) { //bcoz not required true
+
+            if (typeof (data.subcategory) == "object") {
+                if (data.subcategory.length == 0) {
+                    return res.status(400).send("subcategory should not be empty")
+                }
+                for (i = 0; i < data.subcategory.length; i++) {
+                    if (typeof (data.subcategory[i]) != "string") {
+                        return res.status(400).send("subcategory should be array of string")
+                    }
+                }
+            } else {
+                if (typeof (data.subcategory) != "string") {
+                    return res.status(400).send("subcategory should be string ")
+                }
+                if (data.subcategory.trim().length == 0) {
+                    return res.status(400).send(" subcategory should not be blank")
+                }
+            }
+        }
+
         data.isPublished = true
         data.publishedAt = Date.now()
-        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, {  $push: { tags: data.tags,  subcategory: data.subcategory },title: data.title, body: data.body } , { new: true })
+        updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
@@ -93,17 +215,17 @@ const deleteBlog = async function (req, res) {
     }
 }
 
-const deleteBlogByQuerry = async function(req, res) {
-    try{
-        const data =req.query
+const deleteBlogByQuerry = async function (req, res) {
+    try {
+        const data = req.query
         data.isDeleted = false
         console.log(data)
-        const blogDeleted = await blogModel.updateMany(data,{$set:{isDeleted: true}}, {new: true})
+        const blogDeleted = await blogModel.updateMany(data, { $set: { isDeleted: true } }, { new: true })
         console.log(blogDeleted)
-         if(blogDeleted.modifiedCount == 0) return res.send("User already deleted")
-        res.status(200).send({status: true, data: blogDeleted})
+        if (blogDeleted.modifiedCount == 0) return res.send("User already deleted")
+        res.status(200).send({ status: true, data: blogDeleted })
     }
-    catch(err) {
+    catch (err) {
         res.status(500).send(err.message)
 
     }
