@@ -98,14 +98,18 @@ const createBlog = async function (req, res) {
 }
 
 
+//???? why if we are giving wrong tags in query it is not checking that e.g give some key which is not in schema e.g{abcd:ghj} pic taken at 11:12(23-06-22)
+
 const getBlogData = async function (req, res) {
     try {
         const data = req.query
+        if(Object.keys(data).length==0)return res.status(400).send("data empty")
         data.isDeleted = false
         data.isPublished = true
+        console.log(data)
         const result = await blogModel.find(data)
         if (result.length == 0) {
-            return res.status(400).send("Incorrect Data entered")
+            return res.status(404).send("data not found")
         }
         // console.log(result)
         return res.status(200).send({ status: true, msg: result })
@@ -123,14 +127,14 @@ const updateBlog = async function (req, res) {
         const blogId = req.params.blogId;
         console.log(blogId)
         const isavailable = await blogModel.find({ _id: blogId, isDeleted: false });
-        if (isavailable.length == 0) { return res.status(404).send("BlogId is invalid") }
+        if (isavailable.length == 0) { return res.status(404).send("no data found") }
 
         const data = req.body
         if (data.title == null) {
-            console.log(data.title)
+            // console.log(data.title)
         }
         else {
-            console.log("In else")
+            console.log("In title else")
             if (data.title != null && typeof (data.title) != "string") {
                 console.log("trim")
                 return res.status(400).send("title  should be string")
@@ -145,7 +149,7 @@ const updateBlog = async function (req, res) {
             console.log(data.body)
         }
         else {
-            console.log("In else")
+            console.log("In body else")
             if (data.body != null && typeof (data.body) != "string") {
                 console.log("trim")
                 return res.status(400).send("body  should be string")
@@ -159,9 +163,9 @@ const updateBlog = async function (req, res) {
             console.log(data.category)
         }
         else {
-            console.log("In else")
+            console.log("In category else")
             if (data.category != null && typeof (data.category) != "string") {
-                console.log("trim")
+                console.log("in category trim")
                 return res.status(400).send("category  should be string")
             }
             if (data.category.trim().length == 0) {
@@ -169,8 +173,8 @@ const updateBlog = async function (req, res) {
             }
         }
         //================================================================
-
-        if (data.tags !== null) { //bcoz not required true
+console.log(typeof(data.tags),"tags datatype")
+        if (data.tags != null) { //bcoz not required true
 
             if (typeof (data.tags) == "object") {
                 if (data.tags.length == 0) {
@@ -179,9 +183,9 @@ const updateBlog = async function (req, res) {
                 for (i = 0; i < data.tags.length; i++) {
                     if (typeof (data.tags[i]) != "string") {
                         return res.status(400).send("tags should be array of string")
-                    } console.log(data.tags)
+                    }// console.log(data.tags)
                     if (data.tags.toString().trim().length == 0) {
-                        console.log("In Trim")
+                        console.log("In tags Trim")
                         return res.status(400).send(" tags should not be blank after trim")
                     }
                 }
@@ -223,7 +227,7 @@ const updateBlog = async function (req, res) {
 
         data.isPublished = true
         data.publishedAt = Date.now()
-        updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body }, { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
@@ -241,8 +245,6 @@ const deleteBlog = async function (req, res) {
         const blogId = req.params.blogId
         //console.log(blogId)
         const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
-        // if(result.isDeleted == true) return res.status(400).send({status: false, msg: "Already deleted User"})
-        //if(result.isDeleted == true ) return res.send("Already deleted user")
         if (!result) { return res.status(404).send("no such data exist or already deleted") }
 
         return res.status(200).send({ status: "true", msg: "Updated" })
@@ -255,31 +257,21 @@ const deleteBlog = async function (req, res) {
 const deleteBlogByQuerry = async function (req, res) {
     try {
         const data = req.query
-        //if (!data.key) return res.status(400).send({ status: false, msg: "Provide Data To Delete" })
+        //console.log(data.keys.length) this is wrong
+        if (Object.keys(data).length==0) return res.status(400).send({ status: false, msg: "data required" })
         console.log(data)
-        
-        
-        const toCheckQuery = await blogModel.find()
-        console.log(toCheckQuery.subcategory[0])
-        // console.log(toCheckQuery)
-        if (data.category != toCheckQuery.category) { return res.status(400).send({ status: false, msg: "Provide correct data to delete" }) }
-        if (data.body != toCheckQuery.body) { return res.status(400).send({ status: false, msg: "Provide correct data to delete" }) }
-        if (data.tags != toCheckQuery.tags) { return res.status(400).send({ status: false, msg: "Provide correct data to delete" }) }
-        
-        console.log(toCheckQuery.subcategory)
-        const check = toCheckQuery.subcategory.filter(x => x == data.subcategory) 
-        if(!check) { return res.status(400).send({ status: false, msg: "Provide correct data to delete" }) }
-        
-        
-        
-        
-        if (data.title != toCheckQuery.title) { return res.status(400).send({ status: false, msg: "Provide correct data to delete" }) }
-        if (data.authorId != toCheckQuery.authorId) { return res.status(400).send({ status: false, msg: " Provide correct data to delete" }) }
         data.isDeleted = false
+        
+        
+        const toCheckQuery = await blogModel.find(data)
+        //console.log(toCheckQuery[0].subcategory)
+         console.log(toCheckQuery)
+       
         //console.log(data)
+        if(toCheckQuery.length==0)return res.status(404).send("no data exist")
 
         const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
-        console.log(blogDeleted)
+        //console.log(blogDeleted)
         if (blogDeleted.modifiedCount == 0) return res.send("User already deleted")
         res.status(200).send({ status: true, data: blogDeleted })
     }

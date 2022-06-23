@@ -3,7 +3,8 @@ const authorModel = require("../Models/authorModel")
 
 const loginUser = async function (req, res) {
     let userName = req.body.email;
-    let password = req.body.password;
+    let password = req.body.password; 
+    //validate above both also
     console.log(req.body)
     let user = await authorModel.findOne({ email: userName, password: password });
     console.log(user)

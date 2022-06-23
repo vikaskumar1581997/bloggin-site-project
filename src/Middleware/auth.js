@@ -75,7 +75,7 @@ const queryAutherization = async function (req, res, next) {
         // console.log(validToken, "Sucess")
         if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize user") }
         // res.send("Sucess")
-        next()
+        next()  
     }
     catch (err) {
         return res.status(500).send(err.message)
