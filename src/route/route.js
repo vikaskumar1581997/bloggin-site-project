@@ -13,11 +13,11 @@ router.post("/blog", CommonMd.authentication, CommonMd.autherization, Blogcontro
 
 router.get("/blogs", Blogcontroller.getBlogData)
 
-router.put("/blogs/:blogId", Blogcontroller.updateBlog)
+router.put("/blogs/:blogId", CommonMd.authentication, CommonMd.autherization,Blogcontroller.updateBlog)
 
-router.delete("/blogs/:blogId", Blogcontroller.deleteBlog)
+router.delete("/blogs/:blogId", CommonMd.authentication, CommonMd.paramsAutherization, Blogcontroller.deleteBlog)
 
-router.delete("/blogs", Blogcontroller.deleteBlogByQuerry)
+router.delete("/blogs", CommonMd.authentication, CommonMd.queryAutherization, Blogcontroller.deleteBlogByQuerry)
 
 router.post("/login", Logincontroller.loginUser)
 

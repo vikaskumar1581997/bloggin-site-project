@@ -245,10 +245,10 @@ const deleteBlog = async function (req, res) {
         //if(result.isDeleted == true ) return res.send("Already deleted user")
         if (!result) { return res.status(404).send("no such data exist or already deleted") }
 
-        return res.status(200).send({ status: "Done" })
+        return res.status(200).send({ status: "true", msg: "Updated" })
     }
     catch (err) {
-        res.status(500).send(err.message)
+        return res.status(500).send(err.message)
     }
 }
 
