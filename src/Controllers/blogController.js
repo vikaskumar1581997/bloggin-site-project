@@ -41,6 +41,9 @@ const createBlog = async function (req, res) {
                 for (i = 0; i < data.tags.length; i++) {
                     if (typeof (data.tags[i]) != "string") {
                         return res.status(400).send("tags should be array of string")
+                    } console.log(data.tags)
+                    if (data.tags.toString().trim().length == 0) { console.log("In Trim")
+                        return res.status(400).send(" tags should not be blank after trim")
                     }
                 }
             } else {
@@ -64,6 +67,9 @@ const createBlog = async function (req, res) {
                     if (typeof (data.subcategory[i]) != "string") {
                         return res.status(400).send("subcategory should be array of string")
                     }
+                    if (data.subcategory.toString().trim().length == 0) { console.log("In Trim")
+                    return res.status(400).send(" subcategory should not be blank after trim")
+                }
                 }
             } else {
                 if (typeof (data.subcategory) != "string") {
@@ -118,39 +124,62 @@ const updateBlog = async function (req, res) {
         if (isavailable.length == 0) { return res.status(404).send("BlogId is invalid") }
 
         const data = req.body
-
-        if (data.title != null && (typeof (data.title) != "string")) {
-            return res.status(400).send("title  should be string")
+        if (data.title == null) {
+            console.log(data.title)
         }
-        if (data.title.trim().length == 0) {
-            return res.status(400).send("title should not be blank")
-        }
-
-        if (data.body != null && (typeof (data.body) != "string")) {
-            return res.status(400).send("body should be string")
-        }
-
-        if (data.body.trim().length == 0) {
-            return res.status(400).send(" body should not be blank")
+        else {
+            console.log("In else")
+            if (data.title != null && typeof (data.title) != "string") {
+                console.log("trim")
+                return res.status(400).send("title  should be string")
+            }
+            if (data.title.trim().length == 0) {
+                return res.status(400).send("title should not be blank")
+            }
         }
 
-        if (data.category != null && (typeof (data.category) != "string")) {
-            return res.status(400).send("category should be string")
+
+        if (data.body == null) {
+            console.log(data.body)
+        }
+        else {
+            console.log("In else")
+            if (data.body != null && typeof (data.body) != "string") {
+                console.log("trim")
+                return res.status(400).send("body  should be string")
+            }
+            if (data.body.trim().length == 0) {
+                return res.status(400).send("body should not be blank")
+            }
         }
 
-        if (data.category.trim().length == 0) {
-            return res.status(400).send(" category should not be blank")
+        if (data.category == null) {
+            console.log(data.category)
+        }
+        else {
+            console.log("In else")
+            if (data.category != null && typeof (data.category) != "string") {
+                console.log("trim")
+                return res.status(400).send("category  should be string")
+            }
+            if (data.category.trim().length == 0) {
+                return res.status(400).send("category should not be blank")
+            }
         }
         //================================================================
 
-        if (data.tags != null) {
+        if (data.tags !== null) { //bcoz not required true
+
             if (typeof (data.tags) == "object") {
                 if (data.tags.length == 0) {
-                    return res.status(400).send("tags should not be empty inside array")
+                    return res.status(400).send("tags should not be empty")
                 }
                 for (i = 0; i < data.tags.length; i++) {
                     if (typeof (data.tags[i]) != "string") {
                         return res.status(400).send("tags should be array of string")
+                    } console.log(data.tags)
+                    if (data.tags.toString().trim().length == 0) { console.log("In Trim")
+                        return res.status(400).send(" tags should not be blank after trim")
                     }
                 }
             } else {
@@ -164,7 +193,6 @@ const updateBlog = async function (req, res) {
         }
 
 
-
         if (data.subcategory != null) { //bcoz not required true
 
             if (typeof (data.subcategory) == "object") {
@@ -175,6 +203,9 @@ const updateBlog = async function (req, res) {
                     if (typeof (data.subcategory[i]) != "string") {
                         return res.status(400).send("subcategory should be array of string")
                     }
+                    if (data.subcategory.toString().trim().length == 0) { console.log("In Trim")
+                    return res.status(400).send(" subcategory should not be blank after trim")
+                }
                 }
             } else {
                 if (typeof (data.subcategory) != "string") {
