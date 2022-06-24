@@ -87,7 +87,7 @@ module.exports.autherization = autherization;
 // }
 
 
-module.exports.authentication = authentication;
-module.exports.autherization = autherization;
+// module.exports.authentication = authentication;
+// module.exports.autherization = autherization;
 //module.exports.paramsAutherization = paramsAutherization
 // module.exports.queryAutherization = queryAutherization
