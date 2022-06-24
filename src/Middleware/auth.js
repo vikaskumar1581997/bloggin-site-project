@@ -27,6 +27,7 @@ const autherization = async function (req, res, next) {
         const token = req.headers['x-api-key']
         const validToken = jwt.verify(token, "Group-15-Project_1")
         let author = req.body.authorId
+        
         console.log(author)
         console.log(validToken, "Sucess")
         if (validToken.ObjectId != author) { return res.status(400).send("Not Authorize user") }
@@ -64,15 +65,17 @@ const paramsAutherization = async function (req, res, next) {
 
 const queryAutherization = async function (req, res, next) {
     try {
-        console.log("In Params")
+        console.log("In query")
         const token = req.headers['x-api-key']
         const validToken = jwt.verify(token, "Group-15-Project_1")
-        let data = req.query
-        const checkdata = await blogModel.find({$or: [{category: data.category},{authorId: data.authorId},{tags: data.tags}, {subcategory: data.subcategory}]})
-        console.log(checkdata)
-        const author = id[0].authorId
 
-        console.log(author)
+
+        // let data = req.query
+        // const checkdata = await blogModel.find({$or: [{category: data.category},{authorId: data.authorId},{tags: data.tags}, {subcategory: data.subcategory}]})
+        // console.log(checkdata)
+        // const author = id[0].authorId
+
+        //console.log(author)
         // console.log(validToken, "Sucess")
         if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize user") }
         // res.send("Sucess")

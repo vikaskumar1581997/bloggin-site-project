@@ -265,7 +265,7 @@ const deleteBlogByQuerry = async function (req, res) {
         
         const toCheckQuery = await blogModel.find(data)
         //console.log(toCheckQuery[0].subcategory)
-         console.log(toCheckQuery)
+         console.log(toCheckQuery,"in handler of query delete")
        
         //console.log(data)
         if(toCheckQuery.length==0)return res.status(404).send("no data exist")

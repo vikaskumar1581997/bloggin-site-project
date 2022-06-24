@@ -9,7 +9,7 @@ const CommonMd = require("../middleware/auth")
 
 router.post('/authors', Authorcontroller.createAuthor)
 
-router.post("/blog", CommonMd.authentication, CommonMd.autherization, Blogcontroller.createBlog)
+router.post("/blog", Blogcontroller.createBlog)
 
 router.get("/blogs", Blogcontroller.getBlogData)
 
@@ -17,7 +17,7 @@ router.put("/blogs/:blogId", CommonMd.authentication, CommonMd.paramsAutherizati
 
 router.delete("/blogs/:blogId", CommonMd.authentication, CommonMd.paramsAutherization, Blogcontroller.deleteBlog)
 
-router.delete("/blogs", CommonMd.authentication, Blogcontroller.deleteBlogByQuerry)
+router.delete("/blogs", CommonMd.authentication,CommonMd.autherization, Blogcontroller.deleteBlogByQuerry)
 
 router.post("/login", Logincontroller.loginUser)
 
