@@ -13,14 +13,14 @@ router.post("/blog", Blogcontroller.createBlog)
 
 router.get("/blogs", Blogcontroller.getBlogData)
 
-router.put("/blogs/:blogId", CommonMd.authentication, CommonMd.paramsAutherization,Blogcontroller.updateBlog)
+router.put("/blogs/:blogId", CommonMd.authentication, Blogcontroller.updateBlog)
 
-router.delete("/blogs/:blogId", CommonMd.authentication, CommonMd.paramsAutherization, Blogcontroller.deleteBlog)
+router.delete("/blogs/:blogId", CommonMd.authentication, Blogcontroller.deleteBlog)
 
 router.delete("/blogs", CommonMd.authentication,CommonMd.autherization, Blogcontroller.deleteBlogByQuerry)
 
-router.post("/login", Logincontroller.loginUser)
+// router.post("/login", Logincontroller.loginUser)
 
-router.get("/verification/:authorId", CommonMd.authentication,CommonMd.autherization )
+// router.get("/verification/:authorId", CommonMd.authentication,CommonMd.autherization )
 
 module.exports = router;

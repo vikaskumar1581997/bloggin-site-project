@@ -2,6 +2,7 @@ const authorModel = require("../Models/authorModel")
 const blogModel = require("../Models/blogModel")
 
 
+
 const createBlog = async function (req, res) {
     try {
         const data = req.body
@@ -103,7 +104,7 @@ const createBlog = async function (req, res) {
 const getBlogData = async function (req, res) {
     try {
         const data = req.query
-        if(Object.keys(data).length==0)return res.status(400).send("data empty")
+        if (Object.keys(data).length == 0) return res.status(400).send("data empty")
         data.isDeleted = false
         data.isPublished = true
         console.log(data)
@@ -124,12 +125,39 @@ const getBlogData = async function (req, res) {
 const updateBlog = async function (req, res) {
 
     try {
-        const blogId = req.params.blogId;
-        console.log(blogId)
+        // const blogId = req.params.blogId;
+        // console.log(blogId)
+//==========================================================
+const blogId = req.params.blogId
+        //console.log(blogId)
+
+        var l = blogId.length
+        if (l != 24) { return res.status(400).send("Invalid Id") }
+
+        const id = await blogModel.find({ _id: blogId })
+
+        if (id.length == 0) { return res.status(404).send("no such blogId found in DB atleast put data available in database then we check if authorized or same author and not deleted ") }
+        const author22 = id[0].authorId
+
+        //console.log("in handler",author22) 
+
+        if (req.authorlogedin.ObjectId != author22) { return res.status(403).send("Not Authorize ") }
+
+
+
+
+
+
+
+
+
+        //=========================================
         const isavailable = await blogModel.find({ _id: blogId, isDeleted: false });
         if (isavailable.length == 0) { return res.status(404).send("no blog data found") }
 
         const data = req.body
+        if(Object.keys(data).length==0){return res.status(400).send("can't be empty")}
+
         if (data.title == null) {
             // console.log(data.title)
         }
@@ -146,12 +174,12 @@ const updateBlog = async function (req, res) {
 
 
         if (data.body == null) {
-            console.log(data.body)
+            console.log("bolg body",data.body)
         }
         else {
-            console.log("In body else")
+            console.log("In body else of body of blog")
             if (data.body != null && typeof (data.body) != "string") {
-                console.log("trim")
+                console.log("trim of body blog")
                 return res.status(400).send("body  should be string")
             }
             if (data.body.trim().length == 0) {
@@ -160,7 +188,7 @@ const updateBlog = async function (req, res) {
         }
 
         if (data.category == null) {
-            console.log(data.category)
+            console.log("category of body",data.category)
         }
         else {
             console.log("In category else")
@@ -173,7 +201,7 @@ const updateBlog = async function (req, res) {
             }
         }
         //================================================================
-console.log(typeof(data.tags),"tags datatype")
+        console.log("tags datatype =",typeof (data.tags), )
         if (data.tags != null) { //bcoz not required true
 
             if (typeof (data.tags) == "object") {
@@ -227,7 +255,7 @@ console.log(typeof(data.tags),"tags datatype")
 
         data.isPublished = true
         data.publishedAt = Date.now()
-        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body,isPublished:data.isPublished,publishedAt: data.publishedAt }, { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body, isPublished: data.isPublished, publishedAt: data.publishedAt }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
@@ -244,11 +272,24 @@ const deleteBlog = async function (req, res) {
     try {
         const blogId = req.params.blogId
         //console.log(blogId)
-        const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
-        console.log(result)
-        if (!result) { return res.status(404).send("no such data exist or already deleted") }
 
-        return res.status(200).send({ status: "true", msg:result })
+        var l = blogId.length
+        if (l != 24) { return res.status(400).send("Invalid Id") }
+
+        const id = await blogModel.find({ _id: blogId })
+
+        if (id.length == 0) { return res.status(404).send("no data found ") }
+        const author22 = id[0].authorId
+
+        //console.log("in handler",author22) 
+
+        if (req.authorlogedin.ObjectId != author22) { return res.status(403).send("Not Authorize ") }
+
+        const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
+        //console.log("pr result",result)
+        if (!result) { return res.status(404).send("no such data  exist") }
+
+        return res.status(200).send({ status: "true" })
     }
     catch (err) {
         return res.status(500).send(err.message)
@@ -258,23 +299,23 @@ const deleteBlog = async function (req, res) {
 const deleteBlogByQuerry = async function (req, res) {
     try {
         const data = req.query
-        //console.log(data.keys.length) this is wrong
-        if (Object.keys(data).length==0) return res.status(400).send({ status: false, msg: "data required" })
+      
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "data required" })
         //console.log(data)
         data.isDeleted = false
         console.log(data)
-        
+
         const toCheckQuery = await blogModel.find(data)
         //console.log(toCheckQuery[0].subcategory)
-         console.log(toCheckQuery,"in handler of query delete")
-       
-        //console.log(data)
-        if(toCheckQuery.length==0)return res.status(404).send("no data exist")
+        console.log(toCheckQuery, "in handler of query delete")
 
-        const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
+        //console.log(data)
+        if (toCheckQuery.length == 0) {return res.status(404).send({msg:"no data exist"})}
+
+        const blogDeleted = await blogModel.updateMany(data, { isDeleted:true }, { new: true })
         //console.log(blogDeleted)
-        if (blogDeleted.modifiedCount == 0) return res.status(400).send("User already deleted")
-        res.status(200).send({ status: true, data: blogDeleted })
+        if (blogDeleted.modifiedCount == 0) return res.status(400).send({msg:"User already deleted"})
+        res.status(200).send({ status: true })
     }
     catch (err) {
         res.status(500).send(err.message)
