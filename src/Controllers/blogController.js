@@ -227,7 +227,7 @@ console.log(typeof(data.tags),"tags datatype")
 
         data.isPublished = true
         data.publishedAt = Date.now()
-        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.bod,isPublished:data.isPublished,publishedAt: data.publishedAt }, { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body,isPublished:data.isPublished,publishedAt: data.publishedAt }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
