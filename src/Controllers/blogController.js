@@ -245,9 +245,10 @@ const deleteBlog = async function (req, res) {
         const blogId = req.params.blogId
         //console.log(blogId)
         const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
+        console.log(result)
         if (!result) { return res.status(404).send("no such data exist or already deleted") }
 
-        return res.status(200).send({ status: "true", msg: "Updated" })
+        return res.status(200).send({ status: "true", msg:result })
     }
     catch (err) {
         return res.status(500).send(err.message)
@@ -259,9 +260,9 @@ const deleteBlogByQuerry = async function (req, res) {
         const data = req.query
         //console.log(data.keys.length) this is wrong
         if (Object.keys(data).length==0) return res.status(400).send({ status: false, msg: "data required" })
-        console.log(data)
+        //console.log(data)
         data.isDeleted = false
-        
+        console.log(data)
         
         const toCheckQuery = await blogModel.find(data)
         //console.log(toCheckQuery[0].subcategory)
@@ -272,7 +273,7 @@ const deleteBlogByQuerry = async function (req, res) {
 
         const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
         //console.log(blogDeleted)
-        if (blogDeleted.modifiedCount == 0) return res.send("User already deleted")
+        if (blogDeleted.modifiedCount == 0) return res.status(400).send("User already deleted")
         res.status(200).send({ status: true, data: blogDeleted })
     }
     catch (err) {

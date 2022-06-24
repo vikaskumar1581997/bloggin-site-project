@@ -42,12 +42,12 @@ const autherization = async function (req, res, next) {
 
 const paramsAutherization = async function (req, res, next) {
     try {
-        console.log("In Params")
+        //console.log("In Params")
         const token = req.headers['x-api-key']
         const validToken = jwt.verify(token, "Group-15-Project_1")
         let blogId = req.params.blogId
         const id = await blogModel.find({ _id: blogId })
-        console.log(id,"jdvhwd")
+        console.log(id,"im params authorization")
         if(id.length==0){return res.status(404).send("no data found for authorisation")}
         const author = id[0].authorId
 
@@ -63,31 +63,31 @@ const paramsAutherization = async function (req, res, next) {
 }
 
 
-const queryAutherization = async function (req, res, next) {
-    try {
-        console.log("In query")
-        const token = req.headers['x-api-key']
-        const validToken = jwt.verify(token, "Group-15-Project_1")
+// const queryAutherization = async function (req, res, next) {
+//     try {
+//         console.log("In query")
+//         const token = req.headers['x-api-key']
+//         const validToken = jwt.verify(token, "Group-15-Project_1")
 
 
-        // let data = req.query
-        // const checkdata = await blogModel.find({$or: [{category: data.category},{authorId: data.authorId},{tags: data.tags}, {subcategory: data.subcategory}]})
-        // console.log(checkdata)
-        // const author = id[0].authorId
+//         // let data = req.query
+//         // const checkdata = await blogModel.find({$or: [{category: data.category},{authorId: data.authorId},{tags: data.tags}, {subcategory: data.subcategory}]})
+//         // console.log(checkdata)
+//         // const author = id[0].authorId
 
-        //console.log(author)
-        // console.log(validToken, "Sucess")
-        if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize user") }
-        // res.send("Sucess")
-        next()  
-    }
-    catch (err) {
-        return res.status(500).send(err.message)
-    }
-}
+//         //console.log(author)
+//         // console.log(validToken, "Sucess")
+//         if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize user") }
+//         // res.send("Sucess")
+//         next()  
+//     }
+//     catch (err) {
+//         return res.status(500).send(err.message)
+//     }
+// }
 
 
 module.exports.authentication = authentication;
 module.exports.autherization = autherization;
 module.exports.paramsAutherization = paramsAutherization
-module.exports.queryAutherization = queryAutherization
+// module.exports.queryAutherization = queryAutherization
