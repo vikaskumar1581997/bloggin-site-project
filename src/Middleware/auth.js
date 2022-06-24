@@ -6,14 +6,14 @@ const authentication = async function (req, res, next) {
         const token = req.headers['x-api-key']
         if (!token) return res.status(400).send({ msg: "please provide token" })
         const validToken = jwt.verify(token, "Group-15-Project_1")
-        console.log(validToken)
+        //console.log(validToken)
         if (!validToken) {
             return res.status(400).send({ status: false, msg: "user not found" })
         }
-        console.log(validToken)
+        //console.log(validToken)
         //    req.body.validauthor = validToken.ObjectId
         // console.log(validauthor)
-        console.log("Done")
+        console.log("Done with authentication")
         next()
     }
     catch (err) {
@@ -27,8 +27,8 @@ const autherization = async function (req, res, next) {
         const token = req.headers['x-api-key']
         const validToken = jwt.verify(token, "Group-15-Project_1")
         let author = req.body.authorId
-        
-        console.log(author)
+        console.log("priniting autorId for authorizatiob",author)
+        if(author==null){return res.status(400).send("plzz give authorId for authorization")}
         console.log(validToken, "Sucess")
         if (validToken.ObjectId != author) { return res.status(400).send("Not Authorize user") }
         // res.send("Sucess")
