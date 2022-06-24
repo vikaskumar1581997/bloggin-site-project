@@ -23,6 +23,10 @@ const createAuthor = async function (req, res) {
             return res.status(400).send("last name should not be empty and should be string")
         }
 
+        if (typeof (data.lastName) != "string") {
+            return res.status(400).send("last name should be string")
+        }
+
         if (data.lastName.trim().length == 0) {
             return res.status(400).send("last name should not be empty")
         }

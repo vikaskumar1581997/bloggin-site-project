@@ -47,7 +47,7 @@ const paramsAutherization = async function (req, res, next) {
         let blogId = req.params.blogId
         const id = await blogModel.find({ _id: blogId })
         console.log(id,"jdvhwd")
-        if(id.length==0){return res.status(404).send("no data found")}
+        if(id.length==0){return res.status(404).send("no data found for authorisation")}
         const author = id[0].authorId
 
         console.log(author)
