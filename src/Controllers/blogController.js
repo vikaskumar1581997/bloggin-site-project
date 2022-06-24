@@ -32,7 +32,7 @@ const createBlog = async function (req, res) {
         // if (data.tags == null) {
         //     return res.status(400).send(" tags should not be null or empty")
         // }
-        if (data.tags !== null) { //bcoz not required true
+        if (data.tags != null) { //bcoz not required true
 
             if (typeof (data.tags) == "object") {
                 if (data.tags.length == 0) {
@@ -127,7 +127,7 @@ const updateBlog = async function (req, res) {
         const blogId = req.params.blogId;
         console.log(blogId)
         const isavailable = await blogModel.find({ _id: blogId, isDeleted: false });
-        if (isavailable.length == 0) { return res.status(404).send("no data found") }
+        if (isavailable.length == 0) { return res.status(404).send("no blog data found") }
 
         const data = req.body
         if (data.title == null) {
@@ -227,7 +227,7 @@ console.log(typeof(data.tags),"tags datatype")
 
         data.isPublished = true
         data.publishedAt = Date.now()
-        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body }, { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.bod,isPublished:data.isPublished,publishedAt: data.publishedAt }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 

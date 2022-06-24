@@ -46,12 +46,13 @@ const paramsAutherization = async function (req, res, next) {
         const validToken = jwt.verify(token, "Group-15-Project_1")
         let blogId = req.params.blogId
         const id = await blogModel.find({ _id: blogId })
-        console.log(id)
+        console.log(id,"jdvhwd")
+        if(id.length==0){return res.status(404).send("no data found")}
         const author = id[0].authorId
 
         console.log(author)
         // console.log(validToken, "Sucess")
-        if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize user") }
+        if (validToken.ObjectId != author) { return res.Status(400).send("Not Authorize ") }
         // res.send("Sucess")
         next()
     }
