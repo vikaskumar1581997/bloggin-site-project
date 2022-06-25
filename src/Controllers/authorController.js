@@ -19,14 +19,14 @@ const createAuthor = async function (req, res) {
             return res.status(400).send({ msg: "first name should be string" })
         }
 
-
+//=================================REGEX======================================
         let f = data.firstName
         let pattern = /\d/g;
         let result = f.match(pattern);
         console.log(result)
         if (result != null) { return res.status(400).send({ msg: "name can not be number" }) }
 
-
+//=========================================================
 
 
         if (data.firstName.trim().length == 0) {
@@ -43,6 +43,7 @@ const createAuthor = async function (req, res) {
             return res.status(400).send({ msg: "last name should be string" })
         }
 
+    //======================REGEX=================================
 
         let l = data.lastName
         let pattern1 = /\d/g;
@@ -50,7 +51,7 @@ const createAuthor = async function (req, res) {
         console.log(result1)
         if (result1 != null) { return res.status(400).send({ msg: "name can not be number" }) }
 
-
+  //=========================================================
         if (data.lastName.trim().length == 0) {
             return res.status(400).send({ msg: "last name should not be empty" })
         }
