@@ -154,7 +154,7 @@ const updateBlog = async function (req, res) {
         if (l != 24) { return res.status(400).send({ msg: "Invalid Id" }) }
 
 
-       
+
 
         //==================AUTHORIZATION==============================
 
@@ -234,19 +234,19 @@ const updateBlog = async function (req, res) {
                 }
                 for (i = 0; i < data.tags.length; i++) {
                     if (typeof (data.tags[i]) != "string") {
-                        return res.status(400).send({msg:"tags should be array of string"})
+                        return res.status(400).send({ msg: "tags should be array of string" })
                     }// console.log(data.tags)
                     if (data.tags.toString().trim().length == 0) {
                         console.log("In tags Trim")
-                        return res.status(400).send({msg:" tags should not be blank after trim"})
+                        return res.status(400).send({ msg: " tags should not be blank after trim" })
                     }
                 }
             } else {
                 if (typeof (data.tags) != "string") {
-                    return res.status(400).send({msg:"tags should be string "})
+                    return res.status(400).send({ msg: "tags should be string " })
                 }
                 if (data.tags.trim().length == 0) {
-                    return res.status(400).send({msg:" tags should not be blank"})
+                    return res.status(400).send({ msg: " tags should not be blank" })
                 }
             }
         }
@@ -256,23 +256,23 @@ const updateBlog = async function (req, res) {
 
             if (typeof (data.subcategory) == "object") {
                 if (data.subcategory.length == 0) {
-                    return res.status(400).send({msg:"subcategory should not be empty inside array"})
+                    return res.status(400).send({ msg: "subcategory should not be empty inside array" })
                 }
                 for (i = 0; i < data.subcategory.length; i++) {
                     if (typeof (data.subcategory[i]) != "string") {
-                        return res.status(400).send({msg:"subcategory should be array of string"})
+                        return res.status(400).send({ msg: "subcategory should be array of string" })
                     }
                     if (data.subcategory.toString().trim().length == 0) {
                         console.log("In Trim")
-                        return res.status(400).send({msg:" subcategory should not be blank after trim"})
+                        return res.status(400).send({ msg: " subcategory should not be blank after trim" })
                     }
                 }
             } else {
                 if (typeof (data.subcategory) != "string") {
-                    return res.status(400).send({msg:"subcategory should be string "})
+                    return res.status(400).send({ msg: "subcategory should be string " })
                 }
                 if (data.subcategory.trim().length == 0) {
-                    return res.status(400).send({msg:" subcategory should not be blank"})
+                    return res.status(400).send({ msg: " subcategory should not be blank" })
                 }
             }
         }
@@ -302,12 +302,12 @@ const deleteBlog = async function (req, res) {
 
         const id = await blogModel.find({ _id: blogId })
 
-         if (id.length == 0) { return res.status(404).send({ msg: "no blog  data found " }) }
+        if (id.length == 0) { return res.status(404).send({ msg: "no blog  data found " }) }
         const author22 = id[0].authorId
 
         //console.log("in handler",author22) 
 
-        if (req.authorlogedin.ObjectId != author22) { return res.status(403).send({ msg: "Not Authorize " }) }
+        if (req.authorlogedin.ObjectId != author22) { return res.status(403).send({ msg: "Not Authorized :( " }) }
 
         const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
         //console.log("pr result",result)
@@ -332,9 +332,31 @@ const deleteBlogByQuerry = async function (req, res) {
         const toCheckQuery = await blogModel.find(data)
         //console.log(toCheckQuery[0].subcategory)
         console.log(toCheckQuery, "in handler of query delete")
+        // for(i=0;i<toCheckQuery.length;i++){
+        //     if(req.authorlogedin.ObjectId==toCheckQuery[i].authorId){
+        //         authorId=toCheckQuery[i].authorId
+        //     }else{return res.status(403).send({msg:"not authorized"})}
+        // }
 
         //console.log(data)
         if (toCheckQuery.length == 0) { return res.status(404).send({ msg: "no data exist" }) }
+
+        // if(req.authorlogedin.ObjectId==toCheckQuery[0].authorId){
+        //     console.log("in if")
+        // }
+        tocheckauthorized = false
+        for (i = 0; i < toCheckQuery.length; i++) {
+            console.log("in for")
+            if (req.authorlogedin.ObjectId == toCheckQuery[i].authorId) {
+                console.log("in if")
+                authorId = toCheckQuery[i].authorId
+
+                tocheckauthorized = true
+            }
+        }
+        console.log(tocheckauthorized)
+        if (tocheckauthorized == false) { return res.status(403).send({ msg: "not authorized sorry :( " }) }
+        data.authorId = authorId
 
         const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
         //console.log(blogDeleted)
