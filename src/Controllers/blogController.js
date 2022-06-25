@@ -7,30 +7,30 @@ const createBlog = async function (req, res) {
     try {
         const data = req.body
         console.log(typeof (data.tags))
-        
-        if(Object.keys(data).length==0){return res.status(400).send("please  provide sufficient data")}
-        
+
+        if (Object.keys(data).length == 0) { return res.status(400).send({ msg: "please  provide sufficient data" }) }
+
         if (data.title == null || (typeof (data.title) != "string")) {
-            return res.status(400).send("title  should not be empty and should be string")
+            return res.status(400).send({ msg: "title  should not be empty and should be string" })
         }
         if (data.title.trim().length == 0) {
-            return res.status(400).send("title should not be blank")
+            return res.status(400).send({ msg: "title should not be blank" })
         }
 
         if (data.body == null || (typeof (data.body) != "string")) {
-            return res.status(400).send("body should not be empty")
+            return res.status(400).send({ msg: "body should not be empty abd should be string" })
         }
 
         if (data.body.trim().length == 0) {
-            return res.status(400).send(" body should not be blank")
+            return res.status(400).send({ msg: " body should not be blank" })
         }
 
         if (data.category == null || (typeof (data.category) != "string")) {
-            return res.status(400).send("category should not be empty")
+            return res.status(400).send({ msg: "category should not be empty and should be strig" })
         }
 
         if (data.category.trim().length == 0) {
-            return res.status(400).send(" category should not be blank")
+            return res.status(400).send({ msg: " category should not be blank" })
         }
         console.log(data.tags)
         // if (data.tags == null) {
@@ -40,23 +40,23 @@ const createBlog = async function (req, res) {
 
             if (typeof (data.tags) == "object") {
                 if (data.tags.length == 0) {
-                    return res.status(400).send("tags should not be empty")
+                    return res.status(400).send({ msg: "tags should not be empty" })
                 }
                 for (i = 0; i < data.tags.length; i++) {
                     if (typeof (data.tags[i]) != "string") {
-                        return res.status(400).send("tags should be array of string")
+                        return res.status(400).send({ msg: "tags should be array of string" })
                     } console.log(data.tags)
                     if (data.tags.toString().trim().length == 0) {
                         console.log("In Trim")
-                        return res.status(400).send(" tags should not be blank after trim")
+                        return res.status(400).send({ msg: " tags should not be blank after trim" })
                     }
                 }
             } else {
                 if (typeof (data.tags) != "string") {
-                    return res.status(400).send("tags should be string ")
+                    return res.status(400).send({ msg: "tags should be string " })
                 }
                 if (data.tags.trim().length == 0) {
-                    return res.status(400).send(" tags should not be blank")
+                    return res.status(400).send({ msg: " tags should not be blank" })
                 }
             }
         }
@@ -66,30 +66,46 @@ const createBlog = async function (req, res) {
 
             if (typeof (data.subcategory) == "object") {
                 if (data.subcategory.length == 0) {
-                    return res.status(400).send("subcategory should not be empty")
+                    return res.status(400).send({ msg: "subcategory should not be empty" })
                 }
                 for (i = 0; i < data.subcategory.length; i++) {
                     if (typeof (data.subcategory[i]) != "string") {
-                        return res.status(400).send("subcategory should be array of string")
+                        return res.status(400).send({ msg: "subcategory should be array of string" })
                     }
                     if (data.subcategory.toString().trim().length == 0) {
                         console.log("In Trim")
-                        return res.status(400).send(" subcategory should not be blank after trim")
+                        return res.status(400).send({ msg: " subcategory should not be blank after trim" })
                     }
                 }
             } else {
                 if (typeof (data.subcategory) != "string") {
-                    return res.status(400).send("subcategory should be string ")
+                    return res.status(400).send({ msg: "subcategory should be string " })
                 }
                 if (data.subcategory.trim().length == 0) {
-                    return res.status(400).send(" subcategory should not be blank")
+                    return res.status(400).send({ msg: " subcategory should not be blank" })
                 }
             }
         }
 
+        // var l = data.authorId.length
+        // console.log(l)
+        // // if (l != 23) {
+        //     return res.status(400).send({
+        //         msg: "Invalid Id formast"
+        //     })
+        //}
+
+        if (data.authorId == null || (typeof (data.authorId) != "string")) {
+            return res.status(400).send({ msg: "authorId should not be empty and should be strig" })
+        }
+
+        if (data.authorId.trim().length == 0) {
+            return res.status(400).send({ msg: " authorId should not be blank" })
+        }
 
         const user = await authorModel.findById(data.authorId)
-        if (!user) return res.status(400).send({ status: false, msg: "Enter the Valid Author Id" })
+        console.log(user)
+        if (!user) return res.status(403).send({ status: false, msg: "Id not found. Enter the Valid Author Id" })
         const saveData = await blogModel.create(data)
         res.status(201).send({ status: true, data: saveData })
 
@@ -107,13 +123,13 @@ const createBlog = async function (req, res) {
 const getBlogData = async function (req, res) {
     try {
         const data = req.query
-        if (Object.keys(data).length == 0) return res.status(400).send("data empty")
+        if (Object.keys(data).length == 0) return res.status(400).send({msg:"data empty"})
         data.isDeleted = false
         data.isPublished = true
         console.log(data)
         const result = await blogModel.find(data)
         if (result.length == 0) {
-            return res.status(404).send("data not found")
+            return res.status(404).send({msg:"data not found"})
         }
         // console.log(result)
         return res.status(200).send({ status: true, msg: result })
@@ -130,8 +146,8 @@ const updateBlog = async function (req, res) {
     try {
         // const blogId = req.params.blogId;
         // console.log(blogId)
-//==========================================================
-const blogId = req.params.blogId
+        //==========================================================
+        const blogId = req.params.blogId
         //console.log(blogId)
 
         var l = blogId.length
@@ -159,7 +175,7 @@ const blogId = req.params.blogId
         if (isavailable.length == 0) { return res.status(404).send("no blog data found") }
 
         const data = req.body
-        if(Object.keys(data).length==0){return res.status(400).send("can't be empty")}
+        if (Object.keys(data).length == 0) { return res.status(400).send("can't be empty") }
 
         if (data.title == null) {
             // console.log(data.title)
@@ -177,7 +193,7 @@ const blogId = req.params.blogId
 
 
         if (data.body == null) {
-            console.log("bolg body",data.body)
+            console.log("bolg body", data.body)
         }
         else {
             console.log("In body else of body of blog")
@@ -191,7 +207,7 @@ const blogId = req.params.blogId
         }
 
         if (data.category == null) {
-            console.log("category of body",data.category)
+            console.log("category of body", data.category)
         }
         else {
             console.log("In category else")
@@ -204,7 +220,7 @@ const blogId = req.params.blogId
             }
         }
         //================================================================
-        console.log("tags datatype =",typeof (data.tags), )
+        console.log("tags datatype =", typeof (data.tags),)
         if (data.tags != null) { //bcoz not required true
 
             if (typeof (data.tags) == "object") {
@@ -302,7 +318,7 @@ const deleteBlog = async function (req, res) {
 const deleteBlogByQuerry = async function (req, res) {
     try {
         const data = req.query
-      
+
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "data required" })
         //console.log(data)
         data.isDeleted = false
@@ -313,11 +329,11 @@ const deleteBlogByQuerry = async function (req, res) {
         console.log(toCheckQuery, "in handler of query delete")
 
         //console.log(data)
-        if (toCheckQuery.length == 0) {return res.status(404).send({msg:"no data exist"})}
+        if (toCheckQuery.length == 0) { return res.status(404).send({ msg: "no data exist" }) }
 
-        const blogDeleted = await blogModel.updateMany(data, { isDeleted:true }, { new: true })
+        const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
         //console.log(blogDeleted)
-        if (blogDeleted.modifiedCount == 0) return res.status(400).send({msg:"User already deleted"})
+        if (blogDeleted.modifiedCount == 0) return res.status(400).send({ msg: "User already deleted" })
         res.status(200).send({ status: true })
     }
     catch (err) {
