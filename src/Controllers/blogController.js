@@ -7,6 +7,9 @@ const createBlog = async function (req, res) {
     try {
         const data = req.body
         console.log(typeof (data.tags))
+        
+        if(Object.keys(data).length==0){return res.status(400).send("please  provide sufficient data")}
+        
         if (data.title == null || (typeof (data.title) != "string")) {
             return res.status(400).send("title  should not be empty and should be string")
         }

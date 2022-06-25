@@ -7,7 +7,7 @@ const createAuthor = async function (req, res) {
         console.log(data.firstName)
         console.log(typeof (data.firstName))
 
-        if(Object.keys(data).length==0){return res.status(400).send("please  provide sufficient data")}
+        if(Object.keys(data).length==0){return res.status(400).send({msg:"please  provide sufficient data"})}
         
 
         if (data.firstName == null) {
@@ -85,13 +85,13 @@ const createAuthor = async function (req, res) {
         //==================email validation================
         const email = authorData.filter(x => x.email == data.email)
         //  console.log(password)
-        if (email.length != 0) { return res.status(400).send("email should be unique") }
+        if (email.length != 0) { return res.status(400).send({msg:"email should be unique"}) }
         const check = validator.validate(data.email)
         if (check) {
             const saveData = await authorModel.create(data)
             res.status(201).send({ status: true, data: saveData })
         } else {
-            return res.status(400).send("Enter the valid email")
+            return res.status(400).send({msg:"Enter the valid email"})
         }
     }
     catch (err) {
