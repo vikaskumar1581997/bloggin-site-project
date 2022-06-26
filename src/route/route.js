@@ -19,7 +19,7 @@ router.delete("/blogs/:blogId", CommonMd.authentication, Blogcontroller.deleteBl
 
 router.delete("/blogs", CommonMd.authentication, Blogcontroller.deleteBlogByQuerry)
 
-// router.post("/login", Logincontroller.loginUser)
+ router.post("/login", Logincontroller.loginUser)
 
 // router.get("/verification/:authorId", CommonMd.authentication,CommonMd.autherization )
 

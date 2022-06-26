@@ -1,12 +1,44 @@
 const authorModel = require("../Models/authorModel")
 const blogModel = require("../Models/blogModel")
 
+// Requiring ObjectId from mongoose npm package
+const ObjectId = require('mongoose').Types.ObjectId;
 
+
+//================================================
+function isValidObjectId(id) {
+
+    if (ObjectId.isValid(id)) {
+        if ((String)(new ObjectId(id)) === id)
+            return true;
+        return false
+    }
+    return false
+}
+
+//=======================================================
 
 const createBlog = async function (req, res) {
     try {
         const data = req.body
-        console.log(typeof (data.tags))
+        // console.log(data)
+
+
+        //=======================valid id-==================================
+        // console.log((data.authorId.match(/^0-9a-fA-F]{24}$/)=="62b1a4625df42951ab29e040"))
+        //    if(data.authorId.match(/^0-9a-fA-F]{24}$/)){
+        //     console.log("in regex     ")
+        //    }else{return res.status(400).send({msg:"Invalid Id fromat"})}
+
+
+        r = isValidObjectId(data.authorId)
+        // console.log(r)
+        if (r == false) { return res.status(400).send({ msg: "inavalid id format" }) }
+
+
+        //==================================================================
+
+
 
         if (Object.keys(data).length == 0) { return res.status(400).send({ msg: "please  provide sufficient data" }) }
 
@@ -123,6 +155,14 @@ const createBlog = async function (req, res) {
 const getBlogData = async function (req, res) {
     try {
         const data = req.query
+
+        if(data.authorId!=null){
+        r = isValidObjectId(data.authorId)
+        // console.log(r)
+        if (r == false) { return res.status(400).send({ msg: "inavalid id format" }) }
+        }
+        //===============================================================
+
         if (Object.keys(data).length == 0) return res.status(400).send({ msg: "data empty" })
         data.isDeleted = false
         data.isPublished = true
@@ -150,8 +190,12 @@ const updateBlog = async function (req, res) {
         const blogId = req.params.blogId
         //console.log(blogId)
 
-        var l = blogId.length
-        if (l != 24) { return res.status(400).send({ msg: "Invalid Id" }) }
+        // var l = blogId.length
+        // if (l != 24) { return res.status(400).send({ msg: "Invalid Id" }) }
+
+        r = isValidObjectId(blogId)
+        // console.log(r)
+        if (r == false) { return res.status(400).send({ msg: "inavalid id format ;(" }) }
 
 
 
@@ -279,7 +323,7 @@ const updateBlog = async function (req, res) {
 
         data.isPublished = true
         data.publishedAt = Date.now()
-        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body, isPublished: data.isPublished, publishedAt: data.publishedAt }, { new: true })
+        let updatedBlog = await blogModel.findByIdAndUpdate(blogId, { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body,category:data.category, isPublished: data.isPublished, publishedAt: data.publishedAt }, { new: true })
         // updatedBlog1 = await blogModel.findByIdAndUpdate(blogId, {  }, { new: true })
         // updatedBlog2 = await blogModel.findByIdAndUpdate(blogId, { $push: { subcategory: data.subcategory } }, { new: true })
 
@@ -297,8 +341,15 @@ const deleteBlog = async function (req, res) {
         const blogId = req.params.blogId
         //console.log(blogId)
 
-        var l = blogId.length
-        if (l != 24) { return res.status(400).send({ msg: "Invalid Id" }) }
+        // var l = blogId.length
+        // if (l != 24) { return res.status(400).send({ msg: "Invalid Id" }) }
+
+
+        r = isValidObjectId(blogId)
+        // console.log(r)
+        if (r == false) { return res.status(400).send({ msg: "inavalid id format ;(" }) }
+
+        
 
         const id = await blogModel.find({ _id: blogId })
 
@@ -332,18 +383,12 @@ const deleteBlogByQuerry = async function (req, res) {
         const toCheckQuery = await blogModel.find(data)
         //console.log(toCheckQuery[0].subcategory)
         console.log(toCheckQuery, "in handler of query delete")
-        // for(i=0;i<toCheckQuery.length;i++){
-        //     if(req.authorlogedin.ObjectId==toCheckQuery[i].authorId){
-        //         authorId=toCheckQuery[i].authorId
-        //     }else{return res.status(403).send({msg:"not authorized"})}
-        // }
-
+        
         //console.log(data)
         if (toCheckQuery.length == 0) { return res.status(404).send({ msg: "no data exist" }) }
 
-        // if(req.authorlogedin.ObjectId==toCheckQuery[0].authorId){
-        //     console.log("in if")
-        // }
+        
+//====================authorization===========================
         tocheckauthorized = false
         for (i = 0; i < toCheckQuery.length; i++) {
             console.log("in for")
@@ -356,7 +401,7 @@ const deleteBlogByQuerry = async function (req, res) {
         }
         console.log(tocheckauthorized)
         if (tocheckauthorized == false) { return res.status(403).send({ msg: "not authorized sorry :( " }) }
-        data.authorId = authorId
+        data.authorId = authorId  // toCheckQuery may give multiple data from diff author but we have to delete particular author book so we put that authorId in data object and then delete in line  411.
 
         const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
         //console.log(blogDeleted)
