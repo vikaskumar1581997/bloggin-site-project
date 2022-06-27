@@ -59,13 +59,13 @@ const createAuthor = async function (req, res) {
         if (data.password == null) {
             return res.status(400).send({ msg: "Password should not be empty" })
         }
-        // if (typeof (data.password) != "string") {
-        //     return res.status(400).send({ msg: "password name should be string" })
-        // }
-        if (typeof (data.password) == "string") {
+        if (typeof (data.password) != "string") {
+            return res.status(400).send({ msg: "password name should be string" })
+        }
+        
         if (data.password.trim().length == 0) {
             return res.status(400).send({ msg: "password should not be blank" })
-        }}
+        }
         const authorData = await authorModel.find()
         // console.log(authorData)
         console.log("pass", data.password)
