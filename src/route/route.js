@@ -9,9 +9,9 @@ const CommonMd = require("../middleware/auth")
 
 router.post('/authors', Authorcontroller.createAuthor)
 
-router.post("/blog", Blogcontroller.createBlog)
+router.post("/blog", CommonMd.authentication, Blogcontroller.createBlog)
 
-router.get("/blogs", Blogcontroller.getBlogData)
+router.get("/blogs", CommonMd.authentication, Blogcontroller.getBlogData)
 
 router.put("/blogs/:blogId", CommonMd.authentication, Blogcontroller.updateBlog)
 
