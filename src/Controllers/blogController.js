@@ -353,7 +353,7 @@ const deleteBlog = async function (req, res) {
 
         if (req.authorlogedin.ObjectId != author22) { return res.status(403).send({ msg: "Not Authorized :( " }) }
 
-        const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true })
+        const result = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { $set: { isDeleted: true,deletedAt:Date.now() } }, { new: true })
         //console.log("pr result",result)
         if (!result) { return res.status(404).send({ msg: "no such data  exist" }) }
 
@@ -396,7 +396,7 @@ const deleteBlogByQuerry = async function (req, res) {
         if (tocheckauthorized == false) { return res.status(403).send({ msg: "not authorized sorry :( " }) }
         data.authorId = authorId  // toCheckQuery may give multiple data from diff author but we have to delete particular author book so we put that authorId in data object and then delete in line  411.
 
-        const blogDeleted = await blogModel.updateMany(data, { isDeleted: true }, { new: true })
+        const blogDeleted = await blogModel.updateMany(data, { isDeleted: true,deletedAt:Date.now() }, { new: true })
         //console.log(blogDeleted)
         if (blogDeleted.modifiedCount == 0) return res.status(400).send({ msg: "User already deleted" })
         res.status(200).send({ status: true })

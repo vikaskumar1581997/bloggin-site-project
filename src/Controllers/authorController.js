@@ -1,6 +1,9 @@
 const authorModel = require("../Models/authorModel")
 var validator = require("email-validator");
 
+let passwordPattern=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+
 const createAuthor = async function (req, res) {
     try {
         const data = req.body
@@ -58,14 +61,18 @@ const createAuthor = async function (req, res) {
         //=======================password validation===========================
         if (data.password == null) {
             return res.status(400).send({ msg: "Password should not be empty" })
-        }
-        if (typeof (data.password) != "string") {
-            return res.status(400).send({ msg: "password name should be string" })
-        }
+         }
+        // if (typeof (data.password) != "string") {
+        //     return res.status(400).send({ msg: "password name should be string" })
+        // }
         
-        if (data.password.trim().length == 0) {
-            return res.status(400).send({ msg: "password should not be blank" })
-        }
+        // if (data.password.trim().length == 0) {
+        //     return res.status(400).send({ msg: "password should not be blank" })
+        // }
+
+        console.log("pr pss",data.password.match(passwordPattern))
+        if(!data.password.match(passwordPattern)){return res.status(400).send({status:false,msg:"password Must Contain One Uppercase,Lowercase,Number,Symbol And Minimum Length Should Be 8-Character"});}
+
         const authorData = await authorModel.find()
         // console.log(authorData)
         console.log("pass", data.password)
