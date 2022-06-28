@@ -21,7 +21,7 @@ const loginUser = async function (req, res) {
         },
         "Group-15-Project_1"
     );
-    return res.send({ status: true, token: token });
+    return res.status(200).send({ status: true, token: token });
 };
 // const getloging = async function(req,res){
 
